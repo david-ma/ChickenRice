@@ -26,6 +26,44 @@ const Twitter = require('twitter-lite');
 const fs = require('fs');
 
 
+var promises = [
+    fs.promises.readdir(`new_images/`),
+    fs.promises.readdir(`old_images/`)
+];
+
+Promise.all(promises).then(function([new_images, old_images]) {
+    new_images = ignoreSystemFiles(new_images);
+    old_images = ignoreSystemFiles(old_images);
+
+
+    console.log("hello, here are your old images", old_images);
+
+
+    console.log("You have this many files in new_images: ", new_images.length);
+
+// To do:
+// Twitter DM at david & grace if there are less than 5 images in the folder.
+
+
+// Easy way, just use the next image:
+    var nextImage = new_images[0];
+
+    console.log(nextImage);
+
+    var statuses = [
+        "Today's serving of chicken rice",
+        "Here's your chicken rice of the day",
+        "It's chimkem rice tiem :3"
+    ];
+
+    console.log(selectRandom(statuses));
+
+});
+
+
+
+
+/*
 function newClient(subdomain = 'api') {
     return new Twitter({
         subdomain: subdomain,
@@ -49,9 +87,6 @@ newClient('upload')
     })
     .then(results => {
 
-        console.log("Success!!!!");
-        console.log("results", results);
-
         newClient().post('statuses/update', {
             status: status,
             media_ids: [results.media_id_string]
@@ -62,13 +97,32 @@ newClient('upload')
         
     })
     .catch(console.error);
-
-
-/*
-fs.promises.readdir(`new_images/`)
-    .then( function( files ) {
-        console.log(files);
-    });
 */
 
 
+
+
+/**
+ * Returns a random thing from an array
+ * @param {*} array
+ */
+function selectRandom(array) {
+    const length = array.length;
+    return array[Math.floor( Math.random() * length )];
+}
+
+
+
+/**
+ * Ignores strings that start with . in an array
+ * @param {*} array
+ */
+function ignoreSystemFiles(array) {
+    var newArray = [];
+    array.forEach(function(thing){
+        if(thing.slice(0,1) != ".") {
+            newArray.push(thing);
+        }
+    });
+    return newArray;
+}
