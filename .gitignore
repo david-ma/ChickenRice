@@ -1,0 +1,6 @@
+
+.env
+new_images/*
+old_images/*
+node_modules
+
