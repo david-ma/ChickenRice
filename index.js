@@ -35,12 +35,6 @@ Promise.all(promises).then(function([new_images, old_images]) {
     new_images = ignoreSystemFiles(new_images);
     old_images = ignoreSystemFiles(old_images);
 
-
-    console.log("hello, here are your old images", old_images);
-
-
-    console.log("You have this many files in new_images: ", new_images.length);
-
 // To do:
 // Twitter DM at david & grace if there are less than 5 images in the folder.
 
@@ -48,22 +42,53 @@ Promise.all(promises).then(function([new_images, old_images]) {
 // Easy way, just use the next image:
     var nextImage = new_images[0];
 
-    console.log(nextImage);
-
     var statuses = [
         "Today's serving of chicken rice",
         "Here's your chicken rice of the day",
         "It's chimkem rice tiem :3"
     ];
 
-    console.log(selectRandom(statuses));
+    var orderedStatus = statuses[old_images.length % statuses.length];
+    var randomStatus = selectRandom(statuses);
+
+    console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
+    // postChickenRice(orderedStatus, nextImage);
 
 });
 
 
 
 
-/*
+/**
+ * Post an image & status to twitter!
+ */
+function postChickenRice(image, status = `Today's serving of chicken rice` ) {
+    var image = fs.readFileSync(`new_images/${image}`,
+        { encoding: 'base64' }
+    );
+
+    newClient('upload')
+        .post("media/upload", {
+            media_data: image,
+            status: status
+        })
+        .then(results => {
+    
+            newClient().post('statuses/update', {
+                status: status,
+                media_ids: [results.media_id_string]
+            }).then(result => {
+                console.log("finish");
+                console.log(result);
+            }).catch(err => console.log(err));
+            
+        })
+        .catch(console.error);
+}
+
+/**
+ * Function to create a new twitter client
+ */
 function newClient(subdomain = 'api') {
     return new Twitter({
         subdomain: subdomain,
@@ -75,36 +100,8 @@ function newClient(subdomain = 'api') {
     });
 }
 
-var status = `Hello World! Here's your first serving of chicken rice :)`;
-
-var image = fs.readFileSync('new_images/hainanese-chicken-lg-6911.jpg', { encoding: 'base64' });
-
-
-newClient('upload')
-    .post("media/upload", {
-        media_data: image,
-        status: status
-    })
-    .then(results => {
-
-        newClient().post('statuses/update', {
-            status: status,
-            media_ids: [results.media_id_string]
-        }).then(result => {
-            console.log("finish");
-            console.log(result);
-        }).catch(err => console.log(err));
-        
-    })
-    .catch(console.error);
-*/
-
-
-
-
 /**
  * Returns a random thing from an array
- * @param {*} array
  */
 function selectRandom(array) {
     const length = array.length;
@@ -115,7 +112,6 @@ function selectRandom(array) {
 
 /**
  * Ignores strings that start with . in an array
- * @param {*} array
  */
 function ignoreSystemFiles(array) {
     var newArray = [];
