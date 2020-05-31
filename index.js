@@ -52,7 +52,7 @@ Promise.all(promises).then(function([new_images, old_images]) {
     var randomStatus = selectRandom(statuses);
 
     console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
-    // postChickenRice(orderedStatus, nextImage);
+    postChickenRice(nextImage, orderedStatus);
 
 });
 
