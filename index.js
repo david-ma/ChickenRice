@@ -54,6 +54,16 @@ Promise.all(promises).then(function([new_images, old_images]) {
     console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
     postChickenRice(nextImage, orderedStatus);
 
+// Next thing to do:
+// Move image from "new images" to "old images" after using it
+    fs.rename(`new_images/${nextImage}`, `old_images/${nextImage}`, function(d){
+        console.log(d);
+    });
+
+
+// Also, set up cron job
+
+
 });
 
 
