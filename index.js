@@ -28,8 +28,8 @@ const fs = require('fs');
 
 
 var promises = [
-    fs.promises.readdir(`new_images/`),
-    fs.promises.readdir(`old_images/`)
+    fs.promises.readdir(`${__dirname}/new_images/`),
+    fs.promises.readdir(`${__dirname}/old_images/`)
 ];
 
 Promise.all(promises).then(function([new_images, old_images]) {
@@ -57,7 +57,7 @@ Promise.all(promises).then(function([new_images, old_images]) {
 
 // Next thing to do:
 // Move image from "new images" to "old images" after using it
-    fs.rename(`new_images/${nextImage}`, `old_images/${nextImage}`, function(d){
+    fs.rename(`${__dirname}/new_images/${nextImage}`, `${__dirname}/old_images/${nextImage}`, function(d){
         console.log(d);
     });
 
@@ -74,7 +74,7 @@ Promise.all(promises).then(function([new_images, old_images]) {
  * Post an image & status to twitter!
  */
 function postChickenRice(image, status = `Today's serving of chicken rice` ) {
-    var image = fs.readFileSync(`new_images/${image}`,
+    var image = fs.readFileSync(`${__dirname}/new_images/${image}`,
         { encoding: 'base64' }
     );
 
