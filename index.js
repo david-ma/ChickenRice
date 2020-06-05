@@ -61,9 +61,32 @@ Promise.all(promises).then(function([new_images, old_images]) {
     console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
     postChickenRice(nextImage, orderedStatus);
 
-// Next thing to do:
-
 // Also, DM on twitter if less than 5 images left
+    if(new_images.length < 5) {
+
+    // David and Grace's twitter accounts: [ 72238031, 219920424 ]
+        const dm_targets = [ 72238031, 219920424 ];
+
+        dm_targets.forEach(function(target) {
+            newClient().post("direct_messages/events/new", {
+                event: {
+                    type: "message_create",
+                    message_create: {
+                        target: {
+                            recipient_id: target
+                        },
+                        message_data: {
+                            text: "We're running out of Chicken Rice images. Oh no!"
+                        }
+                    }
+                }
+            }).then(results => {
+                console.log("DM sent:", results);
+            }).catch(error => {
+                console.log("Error sending DM", error);
+            });
+        });
+    }
 
 
 });
