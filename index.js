@@ -62,13 +62,8 @@ Promise.all(promises).then(function([new_images, old_images]) {
     postChickenRice(nextImage, orderedStatus);
 
 // Next thing to do:
-// Move image from "new images" to "old images" after using it
-    fs.rename(`${fresh_images}/${nextImage}`, `${posted_images}/${nextImage}`, function(d){
-        console.log(d);
-    });
 
-
-// Also, set up cron job
+// Also, DM on twitter if less than 5 images left
 
 
 });
@@ -84,6 +79,7 @@ function postChickenRice(image, status = `Today's serving of chicken rice` ) {
         { encoding: 'base64' }
     );
 
+    // Upload the image
     newClient('upload')
         .post("media/upload", {
             media_data: image,
@@ -91,12 +87,18 @@ function postChickenRice(image, status = `Today's serving of chicken rice` ) {
         })
         .then(results => {
     
+            // Once the image has been uploaded, post the status, with the image
             newClient().post('statuses/update', {
                 status: status,
-                media_ids: [results.media_id_string]
+                media_ids: [results.media_id_string] // include the image "media id string" here
             }).then(result => {
-                console.log("finish");
+                console.log("Successfully posted on Twitter!");
                 console.log(result);
+
+                // Move image from "new images" to "old images" after using it
+                // Only move image, if image was successfully posted.
+                fs.rename(`${fresh_images}/${nextImage}`, `${posted_images}/${nextImage}`, console.error);
+
             }).catch(err => console.log(err));
             
         })
