@@ -22,14 +22,19 @@
 **/
 
 
-require('dotenv').config()
+require('dotenv').config({
+    path: `${__dirname}/.env`
+});
+
 const Twitter = require('twitter-lite');
 const fs = require('fs');
 
+const fresh_images = `${__dirname}/fresh_images/`;
+const posted_images = `${__dirname}/posted_images/`;
 
 var promises = [
-    fs.promises.readdir(`${__dirname}/new_images/`),
-    fs.promises.readdir(`${__dirname}/old_images/`)
+    fs.promises.readdir(fresh_images),
+    fs.promises.readdir(posted_images)
 ];
 
 Promise.all(promises).then(function([new_images, old_images]) {
@@ -46,7 +51,8 @@ Promise.all(promises).then(function([new_images, old_images]) {
     var statuses = [
         "Today's serving of chicken rice",
         "Here's your chicken rice of the day",
-        "It's chimkem rice tiem :3"
+        "It's chimkem rice tiem :3",
+        "One serving of chicken rice, coming right up."
     ];
 
     var orderedStatus = statuses[old_images.length % statuses.length];
@@ -57,7 +63,7 @@ Promise.all(promises).then(function([new_images, old_images]) {
 
 // Next thing to do:
 // Move image from "new images" to "old images" after using it
-    fs.rename(`${__dirname}/new_images/${nextImage}`, `${__dirname}/old_images/${nextImage}`, function(d){
+    fs.rename(`${fresh_images}/${nextImage}`, `${posted_images}/${nextImage}`, function(d){
         console.log(d);
     });
 
@@ -74,7 +80,7 @@ Promise.all(promises).then(function([new_images, old_images]) {
  * Post an image & status to twitter!
  */
 function postChickenRice(image, status = `Today's serving of chicken rice` ) {
-    var image = fs.readFileSync(`${__dirname}/new_images/${image}`,
+    var image = fs.readFileSync(`${fresh_images}/${image}`,
         { encoding: 'base64' }
     );
 

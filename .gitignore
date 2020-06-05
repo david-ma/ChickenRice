@@ -2,5 +2,7 @@
 .env
 new_images/*
 old_images/*
+fresh_images/*
+posted_images/*
 node_modules
 
