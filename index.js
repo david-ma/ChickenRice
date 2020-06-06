@@ -97,15 +97,15 @@ Promise.all(promises).then(function([new_images, old_images]) {
 /**
  * Post an image & status to twitter!
  */
-function postChickenRice(image, status = `Today's serving of chicken rice` ) {
-    var image = fs.readFileSync(`${fresh_images}/${image}`,
+function postChickenRice(image_filename, status = `Today's serving of chicken rice` ) {
+    var image_data = fs.readFileSync(`${fresh_images}/${image_filename}`,
         { encoding: 'base64' }
     );
 
     // Upload the image
     newClient('upload')
         .post("media/upload", {
-            media_data: image,
+            media_data: image_data,
             status: status
         })
         .then(results => {
@@ -120,7 +120,7 @@ function postChickenRice(image, status = `Today's serving of chicken rice` ) {
 
                 // Move image from "new images" to "old images" after using it
                 // Only move image, if image was successfully posted.
-                fs.rename(`${fresh_images}/${nextImage}`, `${posted_images}/${nextImage}`, console.error);
+                fs.rename(`${fresh_images}/${image_filename}`, `${posted_images}/${image_filename}`, console.error);
 
             }).catch(err => console.log(err));
             
