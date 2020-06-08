@@ -7,11 +7,16 @@ const { Autohook } = require('twitter-autohook');
 
 const opts = {
     token: process.env.ACCESS_TOKEN,
+    oauth_token: process.env.ACCESS_TOKEN,
     token_secret: process.env.ACCESS_TOKEN_SECRET,
+    oauth_token_secret: process.env.ACCESS_TOKEN_SECRET,
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
     env: 'sandbox',
-    port: 5555
+    url: 'david-ma.net'
+
+    //  Port not needed, defaults to 1337?
+    // port: 5555
 };
 
 // try {
@@ -56,11 +61,14 @@ const opts = {
     webhook.on('event', event => console.log('Something happened:', event));
 
     // Starts a server and adds a new webhook
+    // await webhook.start("https://david-ma.net:5555");
     await webhook.start();
 
     // Subscribes to a user's activity
-    await webhook.subscribe({ oauth_token, oauth_token_secret });
-})().then(console.log).catch(console.error);
+    await webhook.subscribe(opts);
+})().then(d => {
+    console.log("Webhooks successfully activated");
+}).catch(console.error);
 
 
 
