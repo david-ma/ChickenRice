@@ -59,7 +59,7 @@ console.log(`Starting on twitter autohook listener on port ${opts.port}`);
     await webhook.removeWebhooks();
 
     // Listens to incoming activity
-    webhook.on('event', event => console.log('Something happened:', event));
+    webhook.on('event', doEvent);
 
     // Starts a server and adds a new webhook
     await webhook.start();
@@ -71,6 +71,57 @@ console.log(`Starting on twitter autohook listener on port ${opts.port}`);
 }).catch(console.error);
 
 
+
+
+    // David and Grace's twitter accounts: [ 72238031, 219920424 ]
+    // const dm_targets = [ 72238031, 219920424 ];
+
+function doEvent(event) {
+    //console.log('Something happened:', event);
+    // direct_message_events
+
+    if(event.direct_message_events) {
+        console.log("Hey, it looks like we have a direct message!", event.direct_message_events)
+
+    // we need to get the message id and send it to twitter to ask for the actual message
+
+        newClient().get('direct_messages/events/show', {
+            // Might get error if we don't receive exactly 1 message at a time
+            id: event.direct_message_events[0].id
+
+        }).then(result => {
+            console.log("This is what the message says:");
+            console.log(result.event.message_create.message_data);
+
+        }).catch(err => console.log(err));
+
+
+
+    } else{
+        console.log("This was not a direct message.", Object.keys(event))
+        // filter unnecessary info? 
+    }
+
+}
+
+
+
+/**
+ * Function to create a new twitter client
+ * From index.js, we should move to a utilities.js later.
+ * Remember to do some refactoring/cleanup
+ */
+const Twitter = require('twitter-lite');
+function newClient(subdomain = 'api') {
+    return new Twitter({
+        subdomain: subdomain,
+        version: "1.1",
+        consumer_key: process.env.TWITTER_CONSUMER_KEY,
+        consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+        access_token_key: process.env.ACCESS_TOKEN,
+        access_token_secret: process.env.ACCESS_TOKEN_SECRET
+    });
+}
 
 function sayHi(event) {
     // We check that the message is a direct message
