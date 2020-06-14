@@ -5,6 +5,7 @@ const dotenv = require('dotenv').config({
 });
 const { Autohook } = require('twitter-autohook');
 
+// options
 const opts = {
     token: process.env.ACCESS_TOKEN,
     oauth_token: process.env.ACCESS_TOKEN,
@@ -12,12 +13,12 @@ const opts = {
     oauth_token_secret: process.env.ACCESS_TOKEN_SECRET,
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    port: process.env.PORT,  // consumed directly from .env, might not need to include it here.
     env: 'sandbox',
     url: 'david-ma.net'
-
-    //  Port not needed, defaults to 1337?
-    // port: 5555
 };
+
+console.log(`Starting on twitter autohook listener on port ${opts.port}`);
 
 // try {
 //     //   { token: process.env.ACCESS_TOKEN, token_secret: , consumer_key: , consumer_secret: , oauth_token: process.env.TWITTER_ACCESS_TOKEN, oauth_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET, env: process.env }
@@ -61,7 +62,6 @@ const opts = {
     webhook.on('event', event => console.log('Something happened:', event));
 
     // Starts a server and adds a new webhook
-    // await webhook.start("https://david-ma.net:5555");
     await webhook.start();
 
     // Subscribes to a user's activity
