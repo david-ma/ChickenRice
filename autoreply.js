@@ -74,25 +74,34 @@ console.log(`Starting on twitter autohook listener on port ${opts.port}`);
 
 
     // David and Grace's twitter accounts: [ 72238031, 219920424 ]
-    // const dm_targets = [ 72238031, 219920424 ];
+    const admins = [ '72238031', '219920424' ];
+    const bot_id = '1266609872826560512'; 
 
 function doEvent(event) {
     //console.log('Something happened:', event);
     // direct_message_events
 
     if(event.direct_message_events) {
-        console.log("Hey, it looks like we have a direct message!", event.direct_message_events)
+        console.log("Hey, it looks like we have a direct message!", event)
+        var messager = Object.keys(event.users).filter(user => user != bot_id)[0];
 
-    // we need to get the message id and send it to twitter to ask for the actual message
+    // Getting the message id and send it to twitter to ask for the actual message
 
         newClient().get('direct_messages/events/show', {
             // Might get error if we don't receive exactly 1 message at a time
             id: event.direct_message_events[0].id
 
         }).then(result => {
-            console.log("This is what the message says:");
-            console.log(result.event.message_create.message_data);
+            // console.log("This is what the message says:");
+            // console.log(result.event.message_create.message_data);
 
+            // Is messager in the list of admins?
+            // What position is the messager in if so? Return -1 if it isn't
+            if (admins.indexOf(messager) >= 0) { // If the messager is in the list of admins, send it straight to fresh images
+                downloadMedia(event.users[messager].screen_name, "fresh_images", result.event.message_create.message_data);
+            } else { //otherwise, it goes in user submissions
+                downloadMedia(event.users[messager].screen_name, "user_submissions", result.event.message_create.message_data);
+            }
         }).catch(err => console.log(err));
 
 
@@ -104,6 +113,35 @@ function doEvent(event) {
 
 }
 
+/**
+ * Download an image from a twitter DM to a folder.
+ * Probably need to authenticate to grab the image.
+ * Rename it after the user who submitted it?
+ * Probably check if that filename is already in use, and add a filename-1.jpg or such if it's already being used.
+ */
+function downloadMedia(filename, folder, dmData) {
+    // DO something here
+    console.log("I dunno how to do it yet, but it goes here.");
+/*
+    console.log(`media is...`, result.event.message_create.message_data.attachment);
+    // Once we have a DM with a image, try to download the image.
+
+    console.log(`Try to download: ${result.event.message_create.message_data.attachment.media.media_url}`);
+    var url = result.event.message_create.message_data.attachment.media.media_url;
+    var endstring = url.split('https://ton.twitter.com/1.1/ton/data/dm/')[1];
+    console.log(endstring);
+
+    newClient('ton').get(`ton/data/dm/${endstring}#`
+    // newClient('ton').get(`ton/data/dm/${event.direct_message_events[0].id}/${result.event.message_create.message_data.attachment.media.id}`
+// , {
+//     id: result.event.message_create.message_data.attachment.media.id
+// }
+    ).then(result => {
+        console.log("This is what the image looks like:");
+        console.log(result);
+    }).catch(err => console.log(err));
+*/
+}
 
 
 /**
