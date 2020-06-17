@@ -1,5 +1,7 @@
 #!/usr/local/bin/node
 
+const newClient = require("./utilities").newClient;
+
 const dotenv = require('dotenv').config({
     path: `${__dirname}/.env`
 });
@@ -84,7 +86,7 @@ function doEvent(event) {
     if(event.direct_message_events) {
         console.log("Hey, it looks like we have a direct message!", event)
         var messager = Object.keys(event.users).filter(user => user != bot_id)[0];
-
+ 
     // Getting the message id and send it to twitter to ask for the actual message
 
         newClient().get('direct_messages/events/show', {
@@ -144,22 +146,7 @@ function downloadMedia(filename, folder, dmData) {
 }
 
 
-/**
- * Function to create a new twitter client
- * From index.js, we should move to a utilities.js later.
- * Remember to do some refactoring/cleanup
- */
-const Twitter = require('twitter-lite');
-function newClient(subdomain = 'api') {
-    return new Twitter({
-        subdomain: subdomain,
-        version: "1.1",
-        consumer_key: process.env.TWITTER_CONSUMER_KEY,
-        consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-        access_token_key: process.env.ACCESS_TOKEN,
-        access_token_secret: process.env.ACCESS_TOKEN_SECRET
-    });
-}
+
 
 function sayHi(event) {
     // We check that the message is a direct message
