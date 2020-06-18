@@ -80,32 +80,43 @@ console.log(`Starting on twitter autohook listener on port ${opts.port}`);
     const bot_id = '1266609872826560512'; 
 
 function doEvent(event) {
-    //console.log('Something happened:', event);
+    // console.log('Something happened:', event);
     // direct_message_events
 
     if(event.direct_message_events) {
-        console.log("Hey, it looks like we have a direct message!", event)
+// Listen to direct messages
+// automatically download images if someone has sent us one
+        console.log("Hey, it looks like we have a direct message!", event.direct_message_events)
         var messager = Object.keys(event.users).filter(user => user != bot_id)[0];
  
-    // Getting the message id and send it to twitter to ask for the actual message
-        newClient().get('direct_messages/events/show', {
-            // Might get error if we don't receive exactly 1 message at a time
-            id: event.direct_message_events[0].id
+        if( event.direct_message_events[0].message_create.sender_id == bot_id ) {
+            // If the bot sent the message, don't do anything
 
-        }).then(result => {
-            // Is messager in the list of admins?
-            // What position is the messager in if so? Return -1 if it isn't
-            if (admins.indexOf(messager) >= 0) { // If the messager is in the list of admins, send it straight to fresh images
-                downloadMedia(event.users[messager].screen_name, "fresh_images", result.event.message_create.message_data);
-            } else { //otherwise, it goes in user submissions
-                downloadMedia(event.users[messager].screen_name, "user_submissions", result.event.message_create.message_data);
-            }
-        }).catch(err => console.log(err));
+            // Probably don't do anything if no image was attached
+        } else {
+            // Getting the message id and send it to twitter to ask for the actual message
+            newClient().get('direct_messages/events/show', {
+                // Might get error if we don't receive exactly 1 message at a time
+                id: event.direct_message_events[0].id
+
+            }).then(result => {
+                // Is messager in the list of admins?
+                // What position is the messager in if so? Return -1 if it isn't
+                if (admins.indexOf(messager) >= 0) { // If the messager is in the list of admins, send it straight to fresh images
+                    downloadMedia(event.users[messager].screen_name, "fresh_images", result.event.message_create.message_data);
+                } else { //otherwise, it goes in user submissions
+                    downloadMedia(event.users[messager].screen_name, "user_submissions", result.event.message_create.message_data);
+                }
+            }).catch(err => console.log(err));
+        }
 
     } else if( event.follow_events) {
         //DM the new follower 
-        var message = `Hello World, thank you for following the ChickenRiceBot! This is a project by @Frostickle and @Busycrying to practice coding :)
-If you would like to help our mission to spread the joy of chicken rice, send us chic pics here: https://www.dropbox.com/request/HHcnHKtnxqm9LSOScZe9`
+        var message = `Hello World, thank you for following the ChickenRiceBot!
+
+If you would like to help our mission to spread the joy of chicken rice, send us chic pics here: https://www.dropbox.com/request/HHcnHKtnxqm9LSOScZe9
+
+Fun Fact: This is a bot by @Frostickle and @Busycrying to practice coding :)`
 
 // console.log(event.follow_events[0]);
 
@@ -123,7 +134,7 @@ If you would like to help our mission to spread the joy of chicken rice, send us
                 }
             }
         }).then(function(result){
-            console.log("This is what comes back from twitter when it's succesffulll", result);
+            // console.log("This is what comes back from twitter when it's succesffulll", result);
 
         }).catch(err => console.log(err));
 
