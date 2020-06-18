@@ -88,15 +88,11 @@ function doEvent(event) {
         var messager = Object.keys(event.users).filter(user => user != bot_id)[0];
  
     // Getting the message id and send it to twitter to ask for the actual message
-
         newClient().get('direct_messages/events/show', {
             // Might get error if we don't receive exactly 1 message at a time
             id: event.direct_message_events[0].id
 
         }).then(result => {
-            // console.log("This is what the message says:");
-            // console.log(result.event.message_create.message_data);
-
             // Is messager in the list of admins?
             // What position is the messager in if so? Return -1 if it isn't
             if (admins.indexOf(messager) >= 0) { // If the messager is in the list of admins, send it straight to fresh images
@@ -106,10 +102,34 @@ function doEvent(event) {
             }
         }).catch(err => console.log(err));
 
+    } else if( event.follow_events) {
+        //DM the new follower 
+        var message = `Hello World, thank you for following the ChickenRiceBot! This is a project by @Frostickle and @Busycrying to practice coding :)
+If you would like to help our mission to spread the joy of chicken rice, send us chic pics here: https://www.dropbox.com/request/HHcnHKtnxqm9LSOScZe9`
+
+// console.log(event.follow_events[0]);
+
+        // Getting the user id and send it to twitter with the welcome message
+        newClient().post('direct_messages/events/new', {
+            event: {
+                type: "message_create",
+                message_create: {
+                    target: {
+                        recipient_id: event.follow_events[0].source.id
+                    },
+                    message_data: {
+                        text: message
+                    }
+                }
+            }
+        }).then(function(result){
+            console.log("This is what comes back from twitter when it's succesffulll", result);
+
+        }).catch(err => console.log(err));
 
 
-    } else{
-        console.log("This was not a direct message.", Object.keys(event))
+    } else {
+        console.log("This was not a direct message or follow event.", Object.keys(event));
         // filter unnecessary info? 
     }
 
