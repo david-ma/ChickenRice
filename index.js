@@ -17,7 +17,7 @@
  * - Allow us to choose which image gets posted next?
  * - Meta data? Links to where the image was found/by who?
  * - Allow other people to submit images of chicken rice?
- * 
+ * - Maybe make a separate webpage for people to submit files, include introductions and about sections?
  * 
 **/
 
@@ -31,35 +31,47 @@ const fs = require('fs');
 
 const fresh_images = `${__dirname}/fresh_images/`;
 const posted_images = `${__dirname}/posted_images/`;
+const user_images = `${__dirname}/user_photos_approved/`;
 
 var promises = [
     fs.promises.readdir(fresh_images),
-    fs.promises.readdir(posted_images)
+    fs.promises.readdir(posted_images),
+    fs.promises.readdir(user_images)
 ];
 
-Promise.all(promises).then(function([new_images, old_images]) {
+Promise.all(promises).then(function([new_images, old_images, submitted_images]) {
     new_images = ignoreSystemFiles(new_images);
     old_images = ignoreSystemFiles(old_images);
-
-// To do:
-// Twitter DM at david & grace if there are less than 5 images in the folder.
+    submitted_images = ignoreSystemFiles(submitted_images);
 
 
-// Easy way, just use the next image:
-    var nextImage = new_images[0];
 
-    var statuses = [
-        "Today's serving of chicken rice",
-        "Here's your chicken rice of the day",
-        "It's chimkem rice tiem :3",
-        "One serving of chicken rice, coming right up."
-    ];
+    if (submitted_images.length > 0) {
+        var image = submitted_images[0]
+        console.log(`We have user submitted images, so let's post this instead: "${image}"`);
 
-    var orderedStatus = statuses[old_images.length % statuses.length];
-    var randomStatus = selectRandom(statuses);
+        var username = image.split(" - ")[0];
+        var status = `Today's chicken rice photo is brought to you by our friend ${username} 📸 Eat well!`;
+        
+        postChickenRice(user_images, image, status);        
+    } else {
 
-    console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
-    postChickenRice(nextImage, orderedStatus);
+    // Easy way, just use the next image:
+        var nextImage = new_images[0];
+
+        var statuses = [
+            "Today's serving of chicken rice",
+            "Here's your chicken rice of the day",
+            "It's chimkem rice tiem :3",
+            "One serving of chicken rice, coming right up."
+        ];
+
+        var orderedStatus = statuses[old_images.length % statuses.length];
+        var randomStatus = selectRandom(statuses);
+
+        console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
+        postChickenRice(fresh_images, nextImage, orderedStatus);
+    }
 
 // Also, DM on twitter if less than 5 images left
     if(new_images.length < 5) {
@@ -97,8 +109,8 @@ Promise.all(promises).then(function([new_images, old_images]) {
 /**
  * Post an image & status to twitter!
  */
-function postChickenRice(image_filename, status = `Today's serving of chicken rice` ) {
-    var image_data = fs.readFileSync(`${fresh_images}/${image_filename}`,
+function postChickenRice(folder, image_filename, status = `Today's serving of chicken rice` ) {
+    var image_data = fs.readFileSync(`${folder}/${image_filename}`,
         { encoding: 'base64' }
     );
 
@@ -120,7 +132,7 @@ function postChickenRice(image_filename, status = `Today's serving of chicken ri
 
                 // Move image from "new images" to "old images" after using it
                 // Only move image, if image was successfully posted.
-                fs.rename(`${fresh_images}/${image_filename}`, `${posted_images}/${image_filename}`, console.error);
+                fs.rename(`${folder}/${image_filename}`, `${posted_images}/${image_filename}`, console.error);
 
             }).catch(err => console.log(err));
             

@@ -115,6 +115,7 @@ function doEvent(event) {
         var message = `Hello World, thank you for following the ChickenRiceBot!
 
 If you would like to help our mission to spread the joy of chicken rice, send us chic pics here: https://www.dropbox.com/request/HHcnHKtnxqm9LSOScZe9
+Your name will be credited in the tweet 📸
 
 Fun Fact: This is a bot by @Frostickle and @Busycrying to practice coding :)`
 
