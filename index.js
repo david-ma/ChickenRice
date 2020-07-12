@@ -50,11 +50,12 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
         var image = submitted_images[0]
         console.log(`We have user submitted images, so let's post this instead: "${image}"`);
 
+        // To do: error handling for this assumption?
         var username = image.split(" - ")[0];
         var status = `Today's chicken rice photo is brought to you by our friend ${username} 📸 Eat well!`;
-        
+
         postChickenRice(user_images, image, status);        
-    } else {
+    } else if (new_images.length > 0) {
 
     // Easy way, just use the next image:
         var nextImage = new_images[0];
@@ -71,10 +72,16 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
 
         console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
         postChickenRice(fresh_images, nextImage, orderedStatus);
+    } else {
+        // Oh no, no images to post.
+        // Maybe do something else instead?
+        // Post applogy message?
     }
 
 // Also, DM on twitter if less than 5 images left
-    if(new_images.length < 5) {
+    if(new_images.length + submitted_images.length < 5) {
+
+        var number_of_images_left = new_images.length + submitted_images.length;
 
     // David and Grace's twitter accounts: [ 72238031, 219920424 ]
         const dm_targets = [ 72238031, 219920424 ];
@@ -88,7 +95,7 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
                             recipient_id: target
                         },
                         message_data: {
-                            text: "We're running out of Chicken Rice images. Oh no!"
+                            text: `We're running out of Chicken Rice images. Oh no! ${number_of_images_left} images left`
                         }
                     }
                 }
