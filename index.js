@@ -54,7 +54,7 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
         var username = image.split(" - ")[0];
         var status = `Today's chicken rice photo is brought to you by our friend ${username} 📸 Eat well!`;
 
-        postChickenRice(user_images, image, status);        
+        postChickenRice(user_images, image, status, DMLowOnImages);        
     } else if (new_images.length > 0) {
 
     // Easy way, just use the next image:
@@ -71,22 +71,15 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
         var randomStatus = selectRandom(statuses);
 
         console.log(`Posting this image: ${nextImage} with this status: ${orderedStatus}`);
-        postChickenRice(fresh_images, nextImage, orderedStatus);
+        postChickenRice(fresh_images, nextImage, orderedStatus, DMLowOnImages);
     } else {
         // Oh no, no images to post.
         // Maybe do something else instead?
         // Post applogy message?
-    }
+        // David and Grace's twitter accounts: [ 72238031, 219920424 ]
+        const dm_targets = [72238031, 219920424];
 
-// Also, DM on twitter if less than 5 images left
-    if(new_images.length + submitted_images.length < 5) {
-
-        var number_of_images_left = new_images.length + submitted_images.length;
-
-    // David and Grace's twitter accounts: [ 72238031, 219920424 ]
-        const dm_targets = [ 72238031, 219920424 ];
-
-        dm_targets.forEach(function(target) {
+        dm_targets.forEach(function (target) {
             newClient().post("direct_messages/events/new", {
                 event: {
                     type: "message_create",
@@ -95,7 +88,7 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
                             recipient_id: target
                         },
                         message_data: {
-                            text: `We're running out of Chicken Rice images. Oh no! ${number_of_images_left} images left`
+                            text: `Failed to post! No images left!`
                         }
                     }
                 }
@@ -105,9 +98,41 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
                 console.log("Error sending DM", error);
             });
         });
+
     }
+    
+    function DMLowOnImages() {
 
+        // Also, DM on twitter if less than 5 images left
+        if (new_images.length + submitted_images.length < 5) {
 
+            var number_of_images_left = new_images.length + submitted_images.length;
+
+            // David and Grace's twitter accounts: [ 72238031, 219920424 ]
+            const dm_targets = [72238031, 219920424];
+
+            dm_targets.forEach(function (target) {
+                newClient().post("direct_messages/events/new", {
+                    event: {
+                        type: "message_create",
+                        message_create: {
+                            target: {
+                                recipient_id: target
+                            },
+                            message_data: {
+                                text: `We're running out of Chicken Rice images. Oh no! ${number_of_images_left} images left`
+                            }
+                        }
+                    }
+                }).then(results => {
+                    console.log("DM sent:", results);
+                }).catch(error => {
+                    console.log("Error sending DM", error);
+                });
+            });
+        }
+
+    }
 });
 
 
@@ -116,7 +141,7 @@ Promise.all(promises).then(function([new_images, old_images, submitted_images]) 
 /**
  * Post an image & status to twitter!
  */
-function postChickenRice(folder, image_filename, status = `Today's serving of chicken rice` ) {
+function postChickenRice(folder, image_filename, status = `Today's serving of chicken rice`, callback ) {
     var image_data = fs.readFileSync(`${folder}/${image_filename}`,
         { encoding: 'base64' }
     );
@@ -140,6 +165,8 @@ function postChickenRice(folder, image_filename, status = `Today's serving of ch
                 // Move image from "new images" to "old images" after using it
                 // Only move image, if image was successfully posted.
                 fs.rename(`${folder}/${image_filename}`, `${posted_images}/${image_filename}`, console.error);
+
+                callback(); // DM us when it's good
 
             }).catch(err => console.log(err));
             
