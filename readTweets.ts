@@ -20,7 +20,7 @@ newClient
     // console.log("results", results);
     results.statuses.forEach((status) => {
       // console.log(status);
-      
+
       User.findCreateFind({
         where: {
           id: status.user.id,
@@ -30,7 +30,7 @@ newClient
 
       // Tweet.colu
 
-      status.userId = status.user.id
+      status.userId = status.user.id;
       Tweet.findCreateFind({
         where: {
           id: status.id,
