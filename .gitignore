@@ -8,3 +8,4 @@ node_modules
 
 user_submissions
 user_photos_approved
+database.sqlite

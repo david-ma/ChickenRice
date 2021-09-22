@@ -7,7 +7,12 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^10.0.0",
+    "sequelize": "^6.6.5",
+    "sqlite3": "^5.0.2",
     "twitter-autohook": "^1.7.1",
     "twitter-lite": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/sequelize": "^4.28.10"
   }
 }

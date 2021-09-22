@@ -87,6 +87,8 @@ function doEvent(event) {
 // Listen to direct messages
 // automatically download images if someone has sent us one
         console.log("Hey, it looks like we have a direct message!", event.direct_message_events)
+        console.log("message is: ", event.direct_message_events[0].message_create.message_data);
+
         var messager = Object.keys(event.users).filter(user => user != bot_id)[0];
  
         if( event.direct_message_events[0].message_create.sender_id == bot_id ) {
