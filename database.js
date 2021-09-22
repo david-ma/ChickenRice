@@ -42,7 +42,7 @@ User.init({
     default_profile_image: sequelize_1.DataTypes.BOOLEAN,
     following: sequelize_1.DataTypes.BOOLEAN,
     follow_request_sent: sequelize_1.DataTypes.BOOLEAN,
-}, { sequelize, modelName: "user" }).sync({ alter: true });
+}, { sequelize, modelName: "user" });
 class Tweet extends sequelize_1.Model {
 }
 exports.Tweet = Tweet;
@@ -65,7 +65,7 @@ Tweet.init({
     favorited: sequelize_1.DataTypes.BOOLEAN,
     retweeted: sequelize_1.DataTypes.BOOLEAN,
     userId: sequelize_1.DataTypes.NUMBER,
-}, { sequelize, modelName: "tweet" }).sync({ alter: true });
+}, { sequelize, modelName: "tweet" });
 (async () => {
     await sequelize.sync();
 })();

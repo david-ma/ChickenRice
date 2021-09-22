@@ -55,7 +55,8 @@ User.init(
     // withheld_in_countries: DataTypes.STRING,
   },
   { sequelize, modelName: "user" }
-).sync({ alter: true });
+);
+// .sync({ alter: true });
 
 class Tweet extends Model {}
 Tweet.init(
@@ -87,7 +88,8 @@ Tweet.init(
     userId: DataTypes.NUMBER,
   },
   { sequelize, modelName: "tweet" }
-).sync({ alter: true });
+);
+// .sync({ alter: true });
 
 // Tweet.hasOne(User);
 

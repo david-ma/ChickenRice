@@ -4,7 +4,7 @@ const database_1 = require("./database");
 const newClient = require("./utilities").newClient();
 for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
-        const geocode = `-37.${i},144.${j},10km`;
+        const geocode = `-3${i}.5,15${j}.5,100km`;
         newClient
             .get("search/tweets", {
             q: "earthquake",
@@ -34,6 +34,7 @@ for (var i = 0; i < 9; i++) {
         })
             .catch((error) => {
             console.log("Error", error);
+            process.exit(1);
         });
     }
 }
