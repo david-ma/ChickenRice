@@ -6,8 +6,8 @@
   "author": "hi@david-ma.net",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "twitter-autohook": "^1.7.1",
-    "twitter-lite": "^0.13.0"
+    "twitter-lite": "^1.1.0"
   }
 }

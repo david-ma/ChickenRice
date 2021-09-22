@@ -1,17 +1,16 @@
 #!/usr/local/bin/node
-"use strict";
 var newClient = require("./utilities").newClient;
-require('dotenv').config({
-    path: __dirname + "/.env"
+require("dotenv").config({
+    path: __dirname + "/.env",
 });
-var fs = require('fs');
+var fs = require("fs");
 var fresh_images = __dirname + "/fresh_images/";
 var posted_images = __dirname + "/posted_images/";
 var user_images = __dirname + "/user_photos_approved/";
 var promises = [
     fs.promises.readdir(fresh_images),
     fs.promises.readdir(posted_images),
-    fs.promises.readdir(user_images)
+    fs.promises.readdir(user_images),
 ];
 Promise.all(promises).then(function (_a) {
     var new_images = _a[0], old_images = _a[1], submitted_images = _a[2];
@@ -31,7 +30,7 @@ Promise.all(promises).then(function (_a) {
             "Today's serving of chicken rice",
             "Here's your chicken rice of the day",
             "It's chimkem rice tiem :3",
-            "One serving of chicken rice, coming right up."
+            "One serving of chicken rice, coming right up.",
         ];
         var orderedStatus = statuses[old_images.length % statuses.length];
         var randomStatus = selectRandom(statuses);
@@ -41,21 +40,24 @@ Promise.all(promises).then(function (_a) {
     else {
         var dm_targets = [72238031, 219920424];
         dm_targets.forEach(function (target) {
-            newClient().post("direct_messages/events/new", {
+            newClient()
+                .post("direct_messages/events/new", {
                 event: {
                     type: "message_create",
                     message_create: {
                         target: {
-                            recipient_id: target
+                            recipient_id: target,
                         },
                         message_data: {
-                            text: "Failed to post! No images left!"
-                        }
-                    }
-                }
-            }).then(function (results) {
+                            text: "Failed to post! No images left!",
+                        },
+                    },
+                },
+            })
+                .then(function (results) {
                 console.log("DM sent:", results);
-            }).catch(function (error) {
+            })
+                .catch(function (error) {
                 console.log("Error sending DM", error);
             });
         });
@@ -65,21 +67,24 @@ Promise.all(promises).then(function (_a) {
             var number_of_images_left = new_images.length + submitted_images.length;
             var dm_targets = [72238031, 219920424];
             dm_targets.forEach(function (target) {
-                newClient().post("direct_messages/events/new", {
+                newClient()
+                    .post("direct_messages/events/new", {
                     event: {
                         type: "message_create",
                         message_create: {
                             target: {
-                                recipient_id: target
+                                recipient_id: target,
                             },
                             message_data: {
-                                text: "We're running out of Chicken Rice images. Oh no! " + number_of_images_left + " images left"
-                            }
-                        }
-                    }
-                }).then(function (results) {
+                                text: "We're running out of Chicken Rice images. Oh no! " + number_of_images_left + " images left",
+                            },
+                        },
+                    },
+                })
+                    .then(function (results) {
                     console.log("DM sent:", results);
-                }).catch(function (error) {
+                })
+                    .catch(function (error) {
                     console.log("Error sending DM", error);
                 });
             });
@@ -88,22 +93,27 @@ Promise.all(promises).then(function (_a) {
 });
 function postChickenRice(folder, image_filename, status, callback) {
     if (status === void 0) { status = "Today's serving of chicken rice"; }
-    var image_data = fs.readFileSync(folder + "/" + image_filename, { encoding: 'base64' });
-    newClient('upload')
+    var image_data = fs.readFileSync(folder + "/" + image_filename, {
+        encoding: "base64",
+    });
+    newClient("upload")
         .post("media/upload", {
         media_data: image_data,
-        status: status
+        status: status,
     })
         .then(function (results) {
-        newClient().post('statuses/update', {
+        newClient()
+            .post("statuses/update", {
             status: status,
-            media_ids: [results.media_id_string]
-        }).then(function (result) {
+            media_ids: [results.media_id_string],
+        })
+            .then(function (result) {
             console.log("Successfully posted on Twitter!");
             console.log(result);
             fs.rename(folder + "/" + image_filename, posted_images + "/" + image_filename, console.error);
             callback();
-        }).catch(function (err) { return console.log(err); });
+        })
+            .catch(function (err) { return console.log(err); });
     })
         .catch(console.error);
 }
