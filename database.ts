@@ -62,6 +62,7 @@ Tweet.init(
   {
     created_at: DataTypes.DATE,
     id: { type: DataTypes.NUMBER, primaryKey: true },
+    geocode: DataTypes.STRING,
     // id_str: DataTypes.STRING,
     full_text: DataTypes.STRING(280),
     truncated: DataTypes.BOOLEAN,
@@ -74,7 +75,7 @@ Tweet.init(
     // in_reply_to_user_id: DataTypes.STRING,
     in_reply_to_user_id_str: DataTypes.STRING,
     in_reply_to_screen_name: DataTypes.STRING,
-    geo: DataTypes.STRING,
+    geo: DataTypes.STRING(1000),
     coordinates: DataTypes.STRING,
     // place: DataTypes.STRING,
     contributors: DataTypes.STRING,
