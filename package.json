@@ -7,7 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "ngrok": "^3.2.7",
     "twitter-autohook": "^1.7.1",
     "twitter-lite": "^0.13.0"
   }
