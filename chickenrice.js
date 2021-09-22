@@ -1,5 +1,7 @@
 #!/usr/local/bin/node
-const newClient = require("./utilities").newClient;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const utilities_1 = require("./utilities");
 require("dotenv").config({
     path: `${__dirname}/.env`,
 });
@@ -39,7 +41,7 @@ Promise.all(promises).then(function ([new_images, old_images, submitted_images,]
     else {
         const dm_targets = [72238031, 219920424];
         dm_targets.forEach(function (target) {
-            newClient()
+            utilities_1.newClient()
                 .post("direct_messages/events/new", {
                 event: {
                     type: "message_create",
@@ -66,7 +68,7 @@ Promise.all(promises).then(function ([new_images, old_images, submitted_images,]
             var number_of_images_left = new_images.length + submitted_images.length;
             const dm_targets = [72238031, 219920424];
             dm_targets.forEach(function (target) {
-                newClient()
+                utilities_1.newClient()
                     .post("direct_messages/events/new", {
                     event: {
                         type: "message_create",
@@ -94,13 +96,13 @@ function postChickenRice(folder, image_filename, status = `Today's serving of ch
     var image_data = fs.readFileSync(`${folder}/${image_filename}`, {
         encoding: "base64",
     });
-    newClient("upload")
+    utilities_1.newClient("upload")
         .post("media/upload", {
         media_data: image_data,
         status: status,
     })
         .then((results) => {
-        newClient()
+        utilities_1.newClient()
             .post("statuses/update", {
             status: status,
             media_ids: [results.media_id_string],

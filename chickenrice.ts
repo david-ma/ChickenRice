@@ -21,7 +21,7 @@
  *
  **/
 
-const newClient = require("./utilities").newClient;
+import { newClient } from "./utilities";
 
 require("dotenv").config({
   path: `${__dirname}/.env`,
