@@ -4,7 +4,7 @@ const database_1 = require("./database");
 const newClient = require("./utilities").newClient();
 for (var i = 0; i < 9; i++) {
     for (var j = 0; j < 9; j++) {
-        const geocode = `-3${i}.5,15${j}.5,100km`;
+        const geocode = `-3${i}.5,14${j}.5,100km`;
         newClient
             .get("search/tweets", {
             q: "earthquake",
@@ -16,17 +16,18 @@ for (var i = 0; i < 9; i++) {
             results.statuses.forEach((status) => {
                 database_1.User.findCreateFind({
                     where: {
-                        id: status.user.id,
+                        id: status.user.id_str,
                     },
                     defaults: status.user,
                 });
-                status.userId = status.user.id;
+                status.userId = status.user.id_str;
                 status.geocode = geocode;
                 status.coordinates = JSON.stringify(status.coordinates);
                 status.geo = JSON.stringify(status.geo);
                 database_1.Tweet.findCreateFind({
                     where: {
-                        id: status.id,
+                        id: status.id_str,
+                        geocode: geocode,
                     },
                     defaults: status,
                 });

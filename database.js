@@ -12,21 +12,22 @@ class User extends sequelize_1.Model {
 }
 exports.User = User;
 User.init({
-    id: { type: sequelize_1.DataTypes.NUMBER, primaryKey: true },
+    id: sequelize_1.DataTypes.BIGINT,
+    id_str: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
     name: sequelize_1.DataTypes.STRING,
     screen_name: sequelize_1.DataTypes.STRING,
     location: sequelize_1.DataTypes.STRING,
     description: sequelize_1.DataTypes.STRING,
     url: sequelize_1.DataTypes.STRING,
     protected: sequelize_1.DataTypes.BOOLEAN,
-    followers_count: sequelize_1.DataTypes.NUMBER,
-    friends_count: sequelize_1.DataTypes.NUMBER,
-    listed_count: sequelize_1.DataTypes.NUMBER,
+    followers_count: sequelize_1.DataTypes.BIGINT,
+    friends_count: sequelize_1.DataTypes.BIGINT,
+    listed_count: sequelize_1.DataTypes.BIGINT,
     created_at: sequelize_1.DataTypes.DATE,
-    favourites_count: sequelize_1.DataTypes.NUMBER,
+    favourites_count: sequelize_1.DataTypes.BIGINT,
     geo_enabled: sequelize_1.DataTypes.BOOLEAN,
     verified: sequelize_1.DataTypes.BOOLEAN,
-    statuses_count: sequelize_1.DataTypes.NUMBER,
+    statuses_count: sequelize_1.DataTypes.BIGINT,
     profile_background_color: sequelize_1.DataTypes.STRING,
     profile_background_image_url_https: sequelize_1.DataTypes.STRING,
     profile_background_tile: sequelize_1.DataTypes.BOOLEAN,
@@ -48,8 +49,9 @@ class Tweet extends sequelize_1.Model {
 exports.Tweet = Tweet;
 Tweet.init({
     created_at: sequelize_1.DataTypes.DATE,
-    id: { type: sequelize_1.DataTypes.NUMBER, primaryKey: true },
-    geocode: sequelize_1.DataTypes.STRING,
+    id: sequelize_1.DataTypes.BIGINT,
+    geocode: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
+    id_str: { type: sequelize_1.DataTypes.STRING, primaryKey: true },
     full_text: sequelize_1.DataTypes.STRING(280),
     truncated: sequelize_1.DataTypes.BOOLEAN,
     source: sequelize_1.DataTypes.STRING,
@@ -60,11 +62,11 @@ Tweet.init({
     coordinates: sequelize_1.DataTypes.STRING,
     contributors: sequelize_1.DataTypes.STRING,
     is_quote_status: sequelize_1.DataTypes.BOOLEAN,
-    retweet_count: sequelize_1.DataTypes.NUMBER,
-    favorite_count: sequelize_1.DataTypes.NUMBER,
+    retweet_count: sequelize_1.DataTypes.BIGINT,
+    favorite_count: sequelize_1.DataTypes.BIGINT,
     favorited: sequelize_1.DataTypes.BOOLEAN,
     retweeted: sequelize_1.DataTypes.BOOLEAN,
-    userId: sequelize_1.DataTypes.NUMBER,
+    userId: sequelize_1.DataTypes.STRING,
 }, { sequelize, modelName: "tweet" });
 (async () => {
     await sequelize.sync();

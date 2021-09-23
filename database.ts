@@ -7,11 +7,13 @@ const sequelize = new Sequelize({
   logging: false,
 });
 
-class User extends Model {}
+class User extends Model {
+  id_str: string;
+}
 User.init(
   {
-    id: { type: DataTypes.NUMBER, primaryKey: true },
-    // id_str: DataTypes.STRING,
+    id: DataTypes.BIGINT,
+    id_str: { type: DataTypes.STRING, primaryKey: true },
     name: DataTypes.STRING,
     screen_name: DataTypes.STRING,
     location: DataTypes.STRING,
@@ -19,16 +21,16 @@ User.init(
     url: DataTypes.STRING,
     // entities: DataTypes.STRING,
     protected: DataTypes.BOOLEAN,
-    followers_count: DataTypes.NUMBER,
-    friends_count: DataTypes.NUMBER,
-    listed_count: DataTypes.NUMBER,
+    followers_count: DataTypes.BIGINT,
+    friends_count: DataTypes.BIGINT,
+    listed_count: DataTypes.BIGINT,
     created_at: DataTypes.DATE,
-    favourites_count: DataTypes.NUMBER,
+    favourites_count: DataTypes.BIGINT,
     // utc_offset: DataTypes.STRING,
     // time_zone: DataTypes.STRING,
     geo_enabled: DataTypes.BOOLEAN,
     verified: DataTypes.BOOLEAN,
-    statuses_count: DataTypes.NUMBER,
+    statuses_count: DataTypes.BIGINT,
     // lang: DataTypes.STRING,
     // contributors_enabled: DataTypes.BOOLEAN,
     // is_translator: DataTypes.BOOLEAN,
@@ -58,13 +60,16 @@ User.init(
 );
 // .sync({ alter: true });
 
-class Tweet extends Model {}
+class Tweet extends Model {
+  id_str: string;
+  geocode: string;
+}
 Tweet.init(
   {
     created_at: DataTypes.DATE,
-    id: { type: DataTypes.NUMBER, primaryKey: true },
-    geocode: DataTypes.STRING,
-    // id_str: DataTypes.STRING,
+    id: DataTypes.BIGINT,
+    geocode: { type: DataTypes.STRING, primaryKey: true },
+    id_str: { type: DataTypes.STRING, primaryKey: true },
     full_text: DataTypes.STRING(280),
     truncated: DataTypes.BOOLEAN,
     // display_text_range: DataTypes.STRING,
@@ -81,11 +86,11 @@ Tweet.init(
     // place: DataTypes.STRING,
     contributors: DataTypes.STRING,
     is_quote_status: DataTypes.BOOLEAN,
-    retweet_count: DataTypes.NUMBER,
-    favorite_count: DataTypes.NUMBER,
+    retweet_count: DataTypes.BIGINT,
+    favorite_count: DataTypes.BIGINT,
     favorited: DataTypes.BOOLEAN,
     retweeted: DataTypes.BOOLEAN,
-    userId: DataTypes.NUMBER,
+    userId: DataTypes.STRING,
   },
   { sequelize, modelName: "tweet" }
 );
