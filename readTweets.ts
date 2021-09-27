@@ -3,7 +3,7 @@
  */
 
 import Twitter from "twitter-lite";
-import { User, Tweet, sequelize } from "./database";
+import { User, Tweet } from "./database";
 // import asyncForEach from "./utilities";
 
 const newClient: Twitter = require("./utilities").newClient();
@@ -53,5 +53,42 @@ for (var i = 0; i < 9; i++) {
       });
   }
 }
+
+
+    // earthquakeTweets: function(res, req, db) {
+    //   Promise.all([
+    //     User.findAll(),
+    //     Tweet.findAll({
+    //       // limit: 100,
+    //       order: [
+    //         ['created_at', 'ASC']
+    //       ],
+    //       group: 'id_str'
+    //     }),
+    //     Tweet.findAll({
+    //       attributes: ['id_str', 'geocode']
+    //     })
+    //   ]).then(([user, tweet, geocodes]) => {
+    //     res.end(JSON.stringify({
+    //       users: user.reduce((acc, val) => {
+    //         acc[val.id_str] = val
+    //         return acc
+    //       }, {}),
+    //       // tweets: tweet.reduce((acc, val) => {
+    //       //   acc[val.id_str] = val
+    //       //   return acc
+    //       // }, {}),
+    //       tweets: tweet,
+    //       geocodes: geocodes.reduce((acc, val) => {
+    //         if(acc[val.id_str]) {
+    //           acc[val.id_str].push(val.geocode)
+    //         } else {
+    //           acc[val.id_str] = [val.geocode]
+    //         }
+    //         return acc
+    //       }, {}),
+    //     }))
+    //   })
+    // },
 
 // asyncForEach()
